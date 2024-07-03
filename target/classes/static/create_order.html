@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Order</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container" id="order">
+        <a href="index.html" class="back">&laquo; Kembali</a>
+        <h2>Create Order</h2>
+        <form id="createOrderForm">
+            <select id="jenisPelayanan" required>
+                <option value="" disabled selected>Pilih Jenis Pelayanan</option>
+                <option value="Cuci Kering">Cuci Kering</option>
+                <option value="Cuci Setrika">Cuci Setrika</option>
+                <option value="Cuci Someday">Cuci Sameday</option>
+            </select>
+            <input type="number" id="totalBiaya" placeholder="Total Biaya" required>
+            <input type="date" id="tanggal" required>
+            <input type="number" id="pelangganId" placeholder="Pelanggan ID" required>
+            <pre id="result2"></pre>
+            <button type="submit">Create Order</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#createOrderForm').submit(function (event) {
+                event.preventDefault();
+                const order = {
+                    jenisPelayanan: $('#jenisPelayanan').val(),
+                    totalBiaya: $('#totalBiaya').val(),
+                    tanggal: $('#tanggal').val(),
+                    pelanggan: {
+                        id: $('#pelangganId').val()
+                    }
+                };
+                createOrder(order);
+            });
+
+            function createOrder(order) {
+                $.ajax({
+                    url: 'http://localhost:8080/laundryapp/order',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(order),
+                    success: function (response) {
+                        $('#result2').text('Order created successfully!');
+                        $('#createOrderForm')[0].reset();
+                    },
+                    error: function (error) {
+                        console.error('Error creating order:', error);
+                        $('#result2').text('Error creating order.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

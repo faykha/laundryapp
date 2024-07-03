@@ -1,0 +1,9 @@
+com\pemrograman2\LaundryApp\Entity\Pelanggan.class
+com\pemrograman2\LaundryApp\Repo\OrderRepo.class
+com\pemrograman2\LaundryApp\Service\OrderService.class
+com\pemrograman2\LaundryApp\LaundryAppApplication.class
+com\pemrograman2\LaundryApp\Service\PelangganService.class
+com\pemrograman2\LaundryApp\Entity\Order.class
+com\pemrograman2\LaundryApp\Controller\PelangganContoller.class
+com\pemrograman2\LaundryApp\Repo\PelangganRepo.class
+com\pemrograman2\LaundryApp\Controller\OrderController.class

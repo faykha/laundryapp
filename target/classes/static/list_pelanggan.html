@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Pelanggan</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container" id="listPelanggan">
+        <a href="index.html" class="back">&laquo; Kembali</a>
+        <h2>List Pelanggan</h2>
+        <table id="tablePelanggan">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Telepon</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="pelanggan-list">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            fetchPelangganList();
+        });
+
+        function fetchPelangganList() {
+            $.ajax({
+                url: 'http://localhost:8080/laundryapp/pelanggan',
+                type: 'GET',
+                success: function (response) {
+                    const tableBody = $('#pelanggan-list');
+                    tableBody.empty();
+                    response.forEach(pelanggan => {
+                        tableBody.append(`
+                            <tr>
+                                <td>${pelanggan.id}</td>
+                                <td>${pelanggan.nama}</td>
+                                <td>${pelanggan.telp}</td>
+                                <td class="actions">
+                                    <button onclick="editPelanggan(${pelanggan.id})">Edit</button>
+                                    <button onclick="deletePelanggan(${pelanggan.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching pelanggan list:', error);
+                }
+            });
+        }
+
+        function deletePelanggan(id) {
+            if (confirm('Are you sure you want to delete this pelanggan?')) {
+                $.ajax({
+                    url: `http://localhost:8080/laundryapp/pelanggan/${id}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        fetchPelangganList();
+                    },
+                    error: function (error) {
+                        console.error('Error deleting pelanggan:', error);
+                    }
+                });
+            }
+        }
+
+        function editPelanggan(id) {
+            $.ajax({
+                url: `http://localhost:8080/laundryapp/pelanggan/${id}`,
+                type: 'GET',
+                success: function (response) {
+                    const pelanggan = response;
+                    const editForm = `
+                        <form id="edit-pelanggan-form" onsubmit="updatePelanggan(event, ${id})">
+                            <input type="hidden" id="idx" value="${id}">
+                            <label>Nama:</label>
+                            <input type="text" id="nama" value="${pelanggan.nama}"><br><br>
+                            <label>Telepon:</label>
+                            <input type="text" id="telp" value="${pelanggan.telp}"><br><br>
+                            <button type="submit">Update</button>
+                        </form>
+                    `;
+                    $('#listPelanggan').append(editForm);
+                },
+                error: function (error) {
+                    console.error('Error fetching pelanggan data:', error);
+                }
+            });
+        }
+
+        function updatePelanggan(event, id) {
+            event.preventDefault();
+            const nama = $('#nama').val();
+            const telp = $('#telp').val();
+            $.ajax({
+                url: `http://localhost:8080/laundryapp/pelanggan`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id, nama: nama, telp: telp }),
+                success: function (response) {
+                    fetchPelangganList();
+                    $('#edit-pelanggan-form').remove();
+                },
+                error: function (error) {
+                    console.error('Error updating pelanggan:', error);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

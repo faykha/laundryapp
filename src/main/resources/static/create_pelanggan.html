@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Pelanggan</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container" id="pelanggan">
+        <a href="index.html" class="back">&laquo; Kembali</a>
+        <h2>Create Pelanggan</h2>
+        <form id="createPelangganForm">
+            <input type="text" id="nama" placeholder="Nama" required>
+            <input type="text" id="telp" placeholder="Telepon" required>
+            <pre id="result1"></pre>
+            <button type="submit">Create Pelanggan</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#createPelangganForm').submit(function (event) {
+                event.preventDefault();
+                const pelanggan = {
+                    nama: $('#nama').val(),
+                    telp: $('#telp').val()
+                };
+                createPelanggan(pelanggan);
+            });
+
+            function createPelanggan(pelanggan) {
+                $.ajax({
+                    url: 'http://localhost:8080/laundryapp/pelanggan',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(pelanggan),
+                    success: function (response) {
+                        $('#result1').text('Pelanggan created successfully!');
+                        $('#createPelangganForm')[0].reset();
+                    },
+                    error: function (error) {
+                        console.error('Error creating pelanggan:', error);
+                        $('#result1').text('Error creating pelanggan.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
